@@ -9,10 +9,10 @@ fn main() {
 
     let secret_number = rng.random_range(1..=100);
 
-    println!("The secret number is : {:?}", secret_number);
+    let mut no_of_trials = 10;
 
-    loop {
-        println!("Please input your guess");
+    while no_of_trials > 0 {
+        println!("Please input your guess ({no_of_trials} tries left):");
 
         let mut guess = String::new();
 
@@ -20,22 +20,28 @@ fn main() {
             .read_line(&mut guess)
             .expect("Failed to read line");
 
-        // the immediate line below is for converting for string type to number
-
+        // Convert input from string to number.
         let guess: u32 = match guess.trim().parse() {
             Ok(num) => num,
-            Err(_) => continue,
+            Err(_) => {
+                println!("Please enter a valid number.");
+                continue;
+            }
         };
+
+        no_of_trials -= 1;
 
         println!("You guessed: {guess}");
 
         match guess.cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
             Ordering::Equal => {
-                println!("You win");
-                break;
+                println!("You win!");
+                return;
             }
             Ordering::Greater => println!("Too big!"),
         }
     }
+
+    println!("Out of trials. The secret number was: {secret_number}");
 }
